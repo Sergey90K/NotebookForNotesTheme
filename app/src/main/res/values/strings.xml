@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NotebookForNotesTheme</string>
+    <string name="item_detail_title">Item detail title</string>
+    <string name="you_haven_t_created_any_notes_yet_create_at_least_one_note">You haven\'t created any notes yet. Create at least one note.</string>
+    <string name="create_a_new_note">Create a new note</string>
+    <string name="back_button">Back button</string>
 </resources>
