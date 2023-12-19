@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.notebookfornotestheme.R
 import com.example.notebookfornotestheme.data.Item
+import com.example.notebookfornotestheme.ui.AppViewModelProvider
 import com.example.notebookfornotestheme.ui.InventoryTopAppBar
 import com.example.notebookfornotestheme.ui.navigation.NavigationDestination
 import com.example.notebookfornotestheme.ui.theme.NotebookForNotesThemeTheme

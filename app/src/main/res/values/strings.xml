@@ -4,4 +4,18 @@
     <string name="you_haven_t_created_any_notes_yet_create_at_least_one_note">You haven\'t created any notes yet. Create at least one note.</string>
     <string name="create_a_new_note">Create a new note</string>
     <string name="back_button">Back button</string>
+    <string name="attention">Attention</string>
+    <string name="delete_question">Do you really want to delete the note?</string>
+    <string name="no">NO</string>
+    <string name="yes">YES</string>
+    <string name="note_subject">Note subject</string>
+    <string name="description">Description</string>
+    <string name="done">Done</string>
+    <string name="delete">Delete</string>
+    <string name="edit_item_title">Edit item title</string>
+    <string name="add_a_note">Add a note</string>
+    <string name="name_of_the_note">Name of the note</string>
+    <string name="description_of_your_note">Description of your note</string>
+    <string name="required_fields">Required fields</string>
+    <string name="save_note">Save note</string>
 </resources>
