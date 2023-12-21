@@ -1,4 +1,4 @@
-package com.example.notebookfornotestheme.ui
+package com.example.notebookfornotestheme
 
 import android.annotation.SuppressLint
 import androidx.compose.material.icons.Icons
@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.notebookfornotestheme.R
 import com.example.notebookfornotestheme.ui.navigation.InventoryNavHost
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
