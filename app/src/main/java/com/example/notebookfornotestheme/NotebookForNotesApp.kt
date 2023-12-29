@@ -18,7 +18,7 @@ import com.example.notebookfornotestheme.ui.navigation.InventoryNavHost
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun InventoryApp(navController: NavHostController = rememberNavController()) {
+fun NotebookForNotesApp(navController: NavHostController = rememberNavController()) {
     InventoryNavHost(navController = navController)
 }
 

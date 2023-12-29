@@ -18,4 +18,5 @@
     <string name="description_of_your_note">Description of your note</string>
     <string name="required_fields">Required fields</string>
     <string name="save_note">Save note</string>
+    <string name="not_done">Not done</string>
 </resources>

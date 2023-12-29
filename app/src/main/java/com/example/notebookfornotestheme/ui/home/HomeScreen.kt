@@ -150,7 +150,8 @@ private fun InventoryItem(
                 Spacer(Modifier.weight(1f))
                 Checkbox(
                     checked = item.done,
-                    onCheckedChange = { }
+                    onCheckedChange = { },
+                    enabled = false
                 )
             }
             Text(

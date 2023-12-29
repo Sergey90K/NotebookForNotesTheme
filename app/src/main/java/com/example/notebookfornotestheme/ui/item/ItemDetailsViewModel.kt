@@ -38,8 +38,10 @@ class ItemDetailsViewModel(
     fun markAsDone() {
         viewModelScope.launch {
             val currentItem = uiState.value.itemDetails.toItem()
-            if (currentItem.done) {
-                itemsRepository.updateItem(currentItem.copy(done = !currentItem.done))
+            if (!currentItem.done) {
+                itemsRepository.updateItem(currentItem.copy(done = true))
+            }else{
+                itemsRepository.updateItem(currentItem.copy(done = false))
             }
         }
     }

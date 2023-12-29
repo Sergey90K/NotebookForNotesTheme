@@ -123,9 +123,13 @@ private fun ItemDetailsBody(
             onClick = markAsDone,
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small,
-            enabled = !itemDetailsUiState.outOfStock
+            //enabled = !itemDetailsUiState.itemDetails.done
         ) {
-            Text(stringResource(R.string.done))
+            if (!itemDetailsUiState.itemDetails.done) {
+                Text(stringResource(R.string.done))
+            } else {
+                Text(stringResource(R.string.not_done))
+            }
         }
         OutlinedButton(
             onClick = { deleteConfirmationRequired = true },
@@ -259,7 +263,7 @@ fun ItemDetailsScreenPreview() {
                 1,
                 "Pen",
                 "sdfsdfsfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsfsdfsfsdf sdfsdfsd ",
-                true
+                false
             )
         ), markAsDone = {}, onDelete = {})
     }

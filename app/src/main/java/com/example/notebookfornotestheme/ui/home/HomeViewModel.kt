@@ -2,6 +2,7 @@ package com.example.notebookfornotestheme.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notebookfornotestheme.data.Item
 import com.example.notebookfornotestheme.data.ItemsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,3 +21,5 @@ class HomeViewModel(itemsRepository: ItemsRepository) : ViewModel() {
         private const val TIMEOUT_MILLIS = 5_000L
     }
 }
+
+data class HomeUiState(val itemList: List<Item> = listOf())

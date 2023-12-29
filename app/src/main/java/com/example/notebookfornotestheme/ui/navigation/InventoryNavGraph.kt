@@ -29,7 +29,7 @@ fun InventoryNavHost(
         composable(route = HomeDestination.route) {
             HomeScreen(
                 navigateToItemEntry = { navController.navigate(ItemEntryDestination.route) },
-                navigateToItemUpdate = { navController.navigate("${ItemEntryDestination.route}/${it}") }
+                navigateToItemUpdate = { navController.navigate("${ItemDetailsDestination.route}/${it}") }
             )
         }
         composable(route = ItemEntryDestination.route) {
@@ -44,11 +44,11 @@ fun InventoryNavHost(
             })
         ) {
             ItemDetailsScreen(
-                navigateToEditItem = { navController.navigate("${ItemEditDestination.route}/${it}") },
+                navigateToEditItem = { navController.navigate("${ItemEditDestination.route}/$it") },
                 navigateBack = { navController.navigateUp() })
         }
         composable(
-            route = ItemDetailsDestination.routeWithArgs,
+            route = ItemEditDestination.routeWithArgs,
             arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {
                 type = NavType.IntType
             })

@@ -29,7 +29,7 @@ object AppViewModelProvider {
             )
         }
         initializer {
-            HomeViewModel(NotebookForNotesApplication().container.itemsRepository)
+            HomeViewModel(notebookForNotesApplication().container.itemsRepository)
         }
     }
 }
