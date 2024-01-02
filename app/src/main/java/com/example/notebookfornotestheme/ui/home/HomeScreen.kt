@@ -1,6 +1,9 @@
 package com.example.notebookfornotestheme.ui.home
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,12 +16,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +34,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -41,6 +53,7 @@ import com.example.notebookfornotestheme.ui.AppViewModelProvider
 import com.example.notebookfornotestheme.InventoryTopAppBar
 import com.example.notebookfornotestheme.ui.navigation.NavigationDestination
 import com.example.notebookfornotestheme.ui.theme.NotebookForNotesThemeTheme
+import kotlinx.coroutines.launch
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -58,6 +71,7 @@ fun HomeScreen(
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -84,6 +98,11 @@ fun HomeScreen(
         HomeBody(
             itemList = homeUiState.itemList,
             onItemClick = navigateToItemUpdate,
+            markDone = {
+                coroutineScope.launch {
+                    viewModel.markAsDone(it)
+                }
+            },
             modifier = modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -93,7 +112,10 @@ fun HomeScreen(
 
 @Composable
 private fun HomeBody(
-    itemList: List<Item>, onItemClick: (Int) -> Unit, modifier: Modifier = Modifier
+    itemList: List<Item>,
+    onItemClick: (Int) -> Unit,
+    markDone: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -109,6 +131,7 @@ private fun HomeBody(
             InventoryList(
                 itemList = itemList,
                 onItemClick = { onItemClick(it.id) },
+                markDone = markDone,
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
             )
         }
@@ -117,24 +140,38 @@ private fun HomeBody(
 
 @Composable
 private fun InventoryList(
-    itemList: List<Item>, onItemClick: (Item) -> Unit, modifier: Modifier = Modifier
+    itemList: List<Item>,
+    onItemClick: (Item) -> Unit,
+    markDone: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    var step = 0
     LazyColumn(modifier = modifier) {
         items(items = itemList, key = { it.id }) { item ->
             InventoryItem(item = item,
+                markDone = markDone,
+                step,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
                     .clickable { onItemClick(item) })
+            ++step
         }
     }
 }
 
 @Composable
 private fun InventoryItem(
-    item: Item, modifier: Modifier = Modifier
+    item: Item, markDone: (Int) -> Unit, s: Int, modifier: Modifier = Modifier
 ) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
     Card(
-        modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMedium
+                )
+            ), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
@@ -148,17 +185,57 @@ private fun InventoryItem(
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1f))
+                ShowMarkDoneButton(expanded = item.done, onMarkDown = { markDone(s) })
+                ShowItemButton(expanded = expanded, onClick = { expanded = !expanded })
                 Checkbox(
                     checked = item.done,
                     onCheckedChange = { },
                     enabled = false
                 )
             }
-            Text(
-                text = item.description,
-                style = MaterialTheme.typography.titleMedium
-            )
+            if (expanded) {
+                Text(
+                    text = item.description,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun ShowItemButton(
+    expanded: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+            contentDescription = stringResource(R.string.expand_button_content_description),
+            tint = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
+private fun ShowMarkDoneButton(
+    expanded: Boolean,
+    onMarkDown: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = onMarkDown,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = if (expanded) Icons.Filled.Refresh else Icons.Filled.Check,
+            contentDescription = stringResource(R.string.expand_button_content_description),
+            tint = MaterialTheme.colorScheme.secondary
+        )
     }
 }
 
@@ -170,7 +247,7 @@ fun HomeBodyListPreview() {
             Item(1, "Games", "Descriptionssdsd sd play sam games qqqqqqqqq", true),
             Item(2, "Musics", "Descriptionssdsd lisineng sam musics qqqqqqqq", true),
             Item(3, "Video", "Descriptionssdsd  votsching sam wideo  qqqqqqq", true)
-        ), onItemClick = {})
+        ), onItemClick = {}, markDone = {})
     }
 }
 
@@ -178,7 +255,7 @@ fun HomeBodyListPreview() {
 @Composable
 fun HomeBodyEmptyListPreview() {
     NotebookForNotesThemeTheme {
-        HomeBody(listOf(), onItemClick = {})
+        HomeBody(listOf(), onItemClick = {}, markDone = {})
     }
 }
 
@@ -186,13 +263,14 @@ fun HomeBodyEmptyListPreview() {
 @Composable
 fun InventoryItemPreview() {
     NotebookForNotesThemeTheme {
-        InventoryItem(
-            Item(
-                1,
-                "Game",
-                "To do aaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbb cccccccccc dddddddddddd",
-                false
-            ),
-        )
+//        InventoryItem(
+//            Item(
+//                1,
+//                "Game",
+//                "To do aaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbb cccccccccc dddddddddddd",
+//                false
+//            ),
+//          //  markDone = {}
+//        )
     }
 }

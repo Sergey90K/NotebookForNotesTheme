@@ -35,12 +35,12 @@ class ItemDetailsViewModel(
         itemsRepository.deleteItem(uiState.value.itemDetails.toItem())
     }
 
-    fun markAsDone() {
+    suspend fun markAsDone() {
         viewModelScope.launch {
             val currentItem = uiState.value.itemDetails.toItem()
             if (!currentItem.done) {
                 itemsRepository.updateItem(currentItem.copy(done = true))
-            }else{
+            } else {
                 itemsRepository.updateItem(currentItem.copy(done = false))
             }
         }
