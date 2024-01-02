@@ -161,7 +161,7 @@ private fun InventoryList(
 
 @Composable
 private fun InventoryItem(
-    item: Item, markDone: (Int) -> Unit, s: Int, modifier: Modifier = Modifier
+    item: Item, markDone: (Int) -> Unit, step: Int, modifier: Modifier = Modifier
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     Card(
@@ -185,11 +185,11 @@ private fun InventoryItem(
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1f))
-                ShowMarkDoneButton(expanded = item.done, onMarkDown = { markDone(s) })
+                ShowMarkDoneButton(expanded = item.done, onMarkDown = { markDone(step) })
                 ShowItemButton(expanded = expanded, onClick = { expanded = !expanded })
                 Checkbox(
                     checked = item.done,
-                    onCheckedChange = { },
+                    onCheckedChange = {},
                     enabled = false
                 )
             }

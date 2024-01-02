@@ -1,6 +1,5 @@
 package com.example.notebookfornotestheme.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notebookfornotestheme.data.Item
@@ -20,7 +19,7 @@ class HomeViewModel(private val itemsRepository: ItemsRepository) : ViewModel() 
                 initialValue = HomeUiState()
             )
 
-    fun markAsDone(step: Int) {
+    suspend fun markAsDone(step: Int) {
         viewModelScope.launch {
             val currentItem = homeUiState.value.itemList[step]
             if (!currentItem.done) {
